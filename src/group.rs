@@ -65,10 +65,9 @@ impl PutVar for Vec<u8>{
 	fn len(&self) -> usize { self.len() }
 	fn put(&self, ncid: i32, varid: i32) -> Result<(), String> {
                 let err : i32;
-		let data_c: ffi::CString = ffi::CString::new(self.clone()).unwrap();
                 unsafe {
                     let _g = libnetcdf_lock.lock().unwrap();
-                    err = nc_put_var_text(ncid, varid, data_c.as_ptr());
+                    err = nc_put_var_uchar(ncid, varid, self.as_ptr());
                 }
                 if err != NC_NOERR {
                     return Err(NC_ERRORS.get(&err).unwrap().clone());
