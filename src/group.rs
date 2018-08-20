@@ -50,6 +50,7 @@ macro_rules! impl_putvar {
     }
 }
 impl_putvar!(i8, NC_BYTE, nc_put_var_schar);
+impl_putvar!(u8, NC_CHAR, nc_put_var_uchar);
 impl_putvar!(i16, NC_SHORT, nc_put_var_short);
 impl_putvar!(u16, NC_USHORT, nc_put_var_ushort);
 impl_putvar!(i32, NC_INT, nc_put_var_int);
