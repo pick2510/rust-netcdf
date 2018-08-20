@@ -68,7 +68,7 @@ impl PutVar for Vec<u8>{
 		let data_c: ffi::CString = ffi::CString::new(self.clone()).unwrap();
                 unsafe {
                     let _g = libnetcdf_lock.lock().unwrap();
-                    err = nc_put_var_text(ncid, varid, data_c.as_ptr());
+                    err = nc_put_var_string(ncid, varid, data_c.as_ptr() as *mut *const i8);
                 }
                 if err != NC_NOERR {
                     return Err(NC_ERRORS.get(&err).unwrap().clone());
