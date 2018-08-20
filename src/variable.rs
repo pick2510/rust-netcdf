@@ -431,6 +431,9 @@ impl Variable {
     pub fn get_char(&self, cast: bool) -> Result<Vec<u8>, String> {
         get_var_as_type!(self, NC_CHAR, u8, nc_get_var_uchar, cast)
     }
+    pub fn get_char_str(&self, cast:bool) -> Result<Vec<i8>, String> {
+       get_var_as_type!(self, NC_CHAR, i8, nc_get_var_text, cast)
+   }
     pub fn get_byte(&self, cast: bool) -> Result<Vec<i8>, String> {
         get_var_as_type!(self, NC_BYTE, i8, nc_get_var_schar, cast)
     }
