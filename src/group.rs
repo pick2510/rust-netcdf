@@ -60,7 +60,7 @@ impl_putvar!(u64, NC_UINT64, nc_put_var_ulonglong);
 impl_putvar!(f32, NC_FLOAT, nc_put_var_float);
 impl_putvar!(f64, NC_DOUBLE, nc_put_var_double);
  
-impl PutVar for Vec<u8>{
+impl PutVar for Vec<u8> {
 	fn get_nc_type(&self) -> i32 { NC_CHAR }
 	fn len(&self) -> usize { self.len() }
 	fn put(&self, ncid: i32, varid: i32) -> Result<(), String> {
@@ -78,6 +78,28 @@ impl PutVar for Vec<u8>{
 
 
 }
+
+
+impl PutVar for String {
+        fn get_nc_type(&self) -> i32 { NC_CHAR }
+        fn len(&self) -> usize { self.len() }
+        fn put(&self, ncid: i32, varid: i32) -> Result<(), String> {
+                let err : i32;
+		let data_c: ffi::CString = ffi::CString::new(self.clone()).unwrap();
+                unsafe {
+                    let _g = libnetcdf_lock.lock().unwrap();
+                    err = nc_put_var_text(ncid, varid, data_c.as_ptr());
+                }
+                if err != NC_NOERR {
+                    return Err(NC_ERRORS.get(&err).unwrap().clone());
+                }
+                Ok(())
+            }
+
+
+
+}
+
 
 // Write support for all attribute types
 pub trait PutAttr {
