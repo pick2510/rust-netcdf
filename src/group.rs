@@ -50,7 +50,7 @@ macro_rules! impl_putvar {
     }
 }
 impl_putvar!(i8, NC_BYTE, nc_put_var_schar);
-impl_putvar!(u8, NC_CHAR, nc_put_var_uchar);
+//impl_putvar!(u8, NC_CHAR, nc_put_var_text);
 impl_putvar!(i16, NC_SHORT, nc_put_var_short);
 impl_putvar!(u16, NC_USHORT, nc_put_var_ushort);
 impl_putvar!(i32, NC_INT, nc_put_var_int);
@@ -59,7 +59,26 @@ impl_putvar!(i64, NC_INT64, nc_put_var_longlong);
 impl_putvar!(u64, NC_UINT64, nc_put_var_ulonglong);
 impl_putvar!(f32, NC_FLOAT, nc_put_var_float);
 impl_putvar!(f64, NC_DOUBLE, nc_put_var_double);
+ 
+impl PutVar for Vec<u8>{
+	fn get_nc_type(&self) -> i32 { NC_CHAR }
+	fn len(&self) -> usize { self.len() }
+	fn put(&self, ncid: i32, varid: i32) -> Result<(), String> {
+                let err : i32;
+		let data_c: ffi::CString = ffi::CString::new(self.clone()).unwrap();
+                unsafe {
+                    let _g = libnetcdf_lock.lock().unwrap();
+                    err = nc_put_var_text(ncid, varid, data_c.as_ptr());
+                }
+                if err != NC_NOERR {
+                    return Err(NC_ERRORS.get(&err).unwrap().clone());
+                }
+                Ok(())
+            }
 
+
+
+}
 
 // Write support for all attribute types
 pub trait PutAttr {
